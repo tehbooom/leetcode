@@ -2,34 +2,52 @@ package main
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 )
 
 func longestCommonPrefix(strs []string) string {
-	firstStringSet := []string{}
-	prefix := []string{}
-	lengthOfWords := []int{}
-	for longetWord := range strs {
-		lengthOfWords = append(lengthOfWords, len(strs[longetWord]))
+	lengthOfPrefix := len(strs[0])
+	shortestWord := 0
+
+	for i, word := range strs {
+		lengthOfWord := len(word)
+		if lengthOfWord < lengthOfPrefix {
+			shortestWord = i
+			lengthOfPrefix = lengthOfWord
+		}
 	}
-	for _, character := range strings.Split(strs[0], "") {
-		firstStringSet = append(firstStringSet, character)
-	}
-	for i := 1; i < slices.Max(lengthOfWords); i++ {
-		word := strs[i]
-		for j := range word {
-			if string(word[j]) == firstStringSet[j] {
-				prefix = append(prefix, string(word[j]))
+
+	prefix := strings.Split(strs[shortestWord], "")
+	prefixFound := false
+
+	for _, word := range strs {
+		splitWord := strings.Split(word, "")
+		for j := range lengthOfPrefix {
+			if splitWord[j] == prefix[j] {
+				prefixFound = true
+				continue
+			} else if j > 0 {
+				prefix = prefix[:j]
+				lengthOfPrefix = j
+				break
+			} else {
+				prefixFound = false
+				return ""
 			}
 		}
 	}
 
-	return strings.Join(prefix, "")
+	if prefixFound {
+		return strings.Join(prefix, "")
+	}
+
+	return ""
 }
 
 func main() {
-	fmt.Println(longestCommonPrefix([]string{"dog", "racecar", "car"}))
-	fmt.Println(longestCommonPrefix([]string{"flower", "flow", "flight"}))
+	fmt.Printf("Prefix: %s\n", longestCommonPrefix([]string{"dog", "racecar", "car"}))
+	fmt.Printf("Prefix: %s\n", longestCommonPrefix([]string{"flower", "flow", "flight"}))
+	fmt.Printf("Prefix: %s\n", longestCommonPrefix([]string{"a"}))
+	fmt.Printf("Prefix: %s\n", longestCommonPrefix([]string{"reflower", "flow", "flight"}))
 
 }
